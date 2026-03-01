@@ -38,9 +38,20 @@ output "aws-ami" {
   value = data.aws_ami.name.id
 }
 
+data "aws_security_groups" "security-id" {
+  tags = {
+    name = "webserver-sg"
+  }
+}
+
+output "subnet-id" {
+  value = data.aws_security_groups.security-id.ids
+}
+
 #Create resource using the ami image search based on filter
 resource "aws_instance" "name" {
   ami = data.aws_ami.name.id
   instance_type = "t3.nano"
   subnet_id = data.aws_subnet.subnet-id.id
+  security_groups = data.aws_security_groups.security-id.ids
 }
